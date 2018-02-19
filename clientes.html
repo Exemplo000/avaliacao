@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+   <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <meta charset="UTF-8">
+   </head>
+</html>
+
+<style>
+table, td, tr {
+	border: 1px solid black;
+}
+</style>
+
+Pesquise por nome: <input type = "text" name = "texPesq" id = "texPesq"><input type = "submit" name = "botPesq" value = "Pesquisar" onclick = pesquisar()>
+
+<br><br>
+<table id = "tabela">
+<tr><td>Nome</td><td>Idade</td><td>Telefone</td><td>Endereço</td><td>Categoria</td></tr>
+</table>
+
+<script src="jquery-latest.js"></script>
+<script>
+function pesquisar(){
+	if($("#texPesq").val() == "") { alert("Insira o nome para pesquisar."); exit; }
+	var cab = "<tr><td>Nome</td><td>Idade</td><td>Telefone</td><td>Endereço</td><td>Categoria</td></tr>";
+	var dados = enviar($("#texPesq").val());
+	
+	if(dados != ""){
+		var json = JSON.parse(dados);
+	
+		var res = "";
+		for(i = 0; i < json.length; i = i + 5){
+			res = res + "<tr><td>"+ json[i] +"</td><td>"+ json[i + 1] +"</td><td>"+ json[i + 2] +"</td><td>"+ json[i + 3] +"</td><td>"+ json[i + 4] +"</td></tr>";
+		}
+
+		document.getElementById("tabela").innerHTML = cab + res;
+	}
+	else{
+		alert("Nenhum registro encontrado.");
+		document.getElementById("tabela").innerHTML = cab;
+	}
+}
+
+function enviar(pac){
+	var r;
+	
+	$.ajax({
+		url: "clientes_curl.php",
+		type: "post",
+		data: "pac=" + pac,
+		async:false,
+		success: function(data) {
+			r = data;
+		},
+	});
+	
+	return r;
+}
+</script>
